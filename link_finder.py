@@ -1,62 +1,36 @@
-import urllib
-from html.parser import HTMLParser
-from urllib import parse
 import re
-
-from nltk import WordPunctTokenizer
-
-from ReinforcementLearning import ReinforrcementLearning
-from bs4 import BeautifulSoup
+from html.parser import HTMLParser
 import DB
+
 import requests
+from bs4 import BeautifulSoup
 
 
-class LinkFinder(HTMLParser):
+class LinkFinder():
 
-    def __init__(self, base_url, page_url):
-        HTMLParser.__init__(self)
-        self.base_url = base_url
-        self.page_url = page_url
-        # take the description and title of the page
-        self.description_page(self.page_url)
-        # insert to database the information of the page
-        DB.insertDB(self.page_url, self.title)
-        self.links = set()
+    def __init__(self, urlPage,info):
 
-    # overrides, find the links in the page for the crawler
-    def handle_starttag(self, tag, attrs):
-        if tag == 'a':
-            for (attribute, value) in attrs:
-                if attribute == 'href':
-                    url = parse.urljoin(self.base_url, value)
-                    self.links.add(url)
-
-    def page_links(self):
-        return self.links
-
-    def error(self, message):
-        pass
+        self.base_url = urlPage
+        self.html = requests.get(self.base_url)
+        self.title=""
+        self.text=""
+        self.dictionary = info
+        self.Description()
+        DB.insertDB(urlPage,self.title,self.dictionary.get('description'))
 
 
-    #הוצאת מידע אודות הדף אינטרנט: title description
-    def description_page(self, url):
-        # open the url by request
-        response11 = requests.get(url)
+    def Description(self):
 
-        data = response11.text
+        data = self.html.text
 
         # display html format to easy to navigate and to parse the html tags
         soup = BeautifulSoup(data, 'html.parser')
 
-        self.title = ""
         if soup.title:
             self.title = soup.title.string
-            print(self.title)
 
-
-        self.text_decription = soup.find('meta', {'name':'description'}).text
         # kill all script and style elements
-        for script in soup(["script", "style",'[document]', 'head', 'title']):
+        for script in soup(["script", "style", '[document]', 'head', 'title']):
             script.extract()  # rip it out
 
         # get text
@@ -66,7 +40,5 @@ class LinkFinder(HTMLParser):
         # break multi-headlines into a line each
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
         # drop blank lines
-        text = '\n'.join(chunk for chunk in chunks if chunk)
-        obj = ReinforrcementLearning(text)
-        maximize = obj.calculate_score(text)
-        print(maximize)
+        self.text = '\n'.join(chunk for chunk in chunks if chunk)
+        #print(text)

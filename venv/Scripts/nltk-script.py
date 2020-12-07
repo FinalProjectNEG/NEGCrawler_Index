@@ -1,4 +1,4 @@
-#!C:\Users\edend\PycharmProjects\pythonProject7\venv\Scripts\python.exe
+#!C:\Users\edend\PycharmProjects\pythonProject11\venv\Scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'nltk==3.5','console_scripts','nltk'
 import re
 import sys
