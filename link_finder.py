@@ -4,6 +4,7 @@ import DB
 
 import requests
 from bs4 import BeautifulSoup
+from Index import Index
 
 
 class LinkFinder():
@@ -26,8 +27,6 @@ class LinkFinder():
         # display html format to easy to navigate and to parse the html tags
         soup = BeautifulSoup(data, 'html.parser')
 
-        if soup.title:
-            self.title = soup.title.string
 
         # kill all script and style elements
         for script in soup(["script", "style", '[document]', 'head', 'title']):
@@ -41,4 +40,7 @@ class LinkFinder():
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
         # drop blank lines
         self.text = '\n'.join(chunk for chunk in chunks if chunk)
+
+        Create_index = Index(self.text, self.base_url,self.title, self.dictionary.get('description'))
+        Create_index.calculate_score()
         #print(text)
