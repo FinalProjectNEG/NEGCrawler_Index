@@ -1,32 +1,32 @@
+import os
 import re
 from html.parser import HTMLParser
+from urllib import request
+
 import DB
 
 import requests
 from bs4 import BeautifulSoup
 from Index import Index
 
-
 class LinkFinder():
 
-    def __init__(self, urlPage,info):
+    def __init__(self, urlPage,info,title, html):
 
         self.base_url = urlPage
-        self.html = requests.get(self.base_url)
-        self.title=""
-        self.text=""
+        self.html = html
+        self.title = title
+        self.text = ""
         self.dictionary = info
         self.Description()
-        DB.insertDB(urlPage,self.title,self.dictionary.get('description'))
 
 
     def Description(self):
 
-        data = self.html.text
+        #data = self.html.read().decode('utf-8')
 
         # display html format to easy to navigate and to parse the html tags
-        soup = BeautifulSoup(data, 'html.parser')
-
+        soup = BeautifulSoup(self.html, 'html.parser')
 
         # kill all script and style elements
         for script in soup(["script", "style", '[document]', 'head', 'title']):
@@ -40,7 +40,7 @@ class LinkFinder():
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
         # drop blank lines
         self.text = '\n'.join(chunk for chunk in chunks if chunk)
-
         Create_index = Index(self.text, self.base_url,self.title, self.dictionary.get('description'))
         Create_index.calculate_score()
+
         #print(text)

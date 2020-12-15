@@ -1,4 +1,6 @@
-
+#לבדוק את המידע שהובא אלינו מהאתרים ש'זחלנו' אליהם ולבדוק אם המידע:
+# (1) עדכני, (2) חשוב ולא סתם עמוד מפגר (3) בעל סמכות ולא משהו מוזר שיכול להוות כגורם מזיק
+# לאחר שנמצא אתרים שמקיימים את שלושת התנאים הללו אנו נשמור אותם בבסיס נתונים כ-אינדקס
 import pickle
 
 from DB import insertDB
@@ -61,9 +63,13 @@ class Index:
         docTokens = {self.url : self.tokenizeDocText()}
         self.dictionary = self.make_indices(docTokens)
         ## create object....
+        #print(self.dictionary.get(self.url))
         p1 = UrlAdd(self.url, self.title,self.description, self.dictionary.get(self.url))
         self.Make_New_Dictionary(p1)
+
         self.dictionary = self.fullIndex(self.dictionary)
+
+
         self.Add2Dictionary(self.dictionary)
         print()
         print(len(Setting.dictionary_global.keys()))
