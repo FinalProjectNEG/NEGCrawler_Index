@@ -11,13 +11,14 @@ from Index import Index
 
 class LinkFinder():
 
-    def __init__(self, urlPage,info,title, html):
+    def __init__(self, urlPage,info,title, html, time):
 
         self.base_url = urlPage
         self.html = html
         self.title = title
         self.text = ""
         self.dictionary = info
+        self.time = time
         self.Description()
 
 
@@ -40,7 +41,7 @@ class LinkFinder():
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
         # drop blank lines
         self.text = '\n'.join(chunk for chunk in chunks if chunk)
-        Create_index = Index(self.text, self.base_url,self.title, self.dictionary.get('description'))
+        Create_index = Index(self.text, self.base_url,self.title, self.dictionary.get('description'), self.time)
         Create_index.calculate_score()
 
         #print(text)

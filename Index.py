@@ -17,22 +17,33 @@ tokenizer = WordPunctTokenizer()
 
 
 class Index:
-    def __init__(self, docTexts, url, title, description):
+    def __init__(self, docTexts, url, title, description, time):
         self.keywords = []
         self.title = title
         self.description = description
         self.dictionary = None;
         self.docTexts = docTexts
         self.url = url
+        self.time = time
+
 
 
     def index_one_file(self,termlist):
         fileIndex = {}
+        sum = 0
         for index, word in enumerate(termlist):
+            sum+=1
             if word in fileIndex.keys():
                 fileIndex[word].append(index)
             else:
                 fileIndex[word] = [index]
+
+        for key in fileIndex:
+            count = len(fileIndex.get(key))
+            tf = count/sum
+            fileIndex[key] = [count,tf]
+
+
 
         #print(fileIndex)
         return fileIndex
@@ -64,7 +75,7 @@ class Index:
         self.dictionary = self.make_indices(docTokens)
         ## create object....
         #print(self.dictionary.get(self.url))
-        p1 = UrlAdd(self.url, self.title,self.description, self.dictionary.get(self.url))
+        p1 = UrlAdd(self.url, self.title,self.description, self.dictionary.get(self.url),self.time)
         self.Make_New_Dictionary(p1)
 
         self.dictionary = self.fullIndex(self.dictionary)

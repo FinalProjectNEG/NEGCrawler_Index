@@ -1,9 +1,12 @@
+import urllib
 from collections import deque
 
 import requests
 import re
 from urllib.parse import urlparse
 import os
+from urllib.request import urlopen
+
 
 from DB import insertDB, Insert_Graph
 from Link_finder import LinkFinder
@@ -37,6 +40,7 @@ class PyCrawler(object):
 
         html = self.get_html(url)
         parsed = urlparse(url)
+
         base = f"{parsed.scheme}://{parsed.netloc}"
         links = re.findall('''<a\s+(?:[^>]*?\s+)?href="([^"]*)"''', html)
         for i, link in enumerate(links):
@@ -56,6 +60,11 @@ class PyCrawler(object):
         else:
             title=""
         return dict(meta), title,html
+
+    def extract_date(self, url):
+        conn = urllib.request.urlopen(url, timeout=30)
+        time = conn.headers['last-modified']
+        return time
 
     def crawl(self, url):
         self.visited.append(url)
@@ -82,7 +91,8 @@ class PyCrawler(object):
             #     continue
 
             info, title, html = self.extract_info(link)
-            object = LinkFinder(url,info, title, html)
+            time = self.extract_date(link)
+            object = LinkFinder(url,info, title, html, time)
 
             print(f"""Link: {link}    
 Description: {info.get('description')}    
@@ -93,7 +103,8 @@ Keywords: {info.get('keywords')}
 
     def start(self):
         info, title, html = self.extract_info(self.starting_url)
-        object = LinkFinder(self.starting_url, info, title, html)
+        time = self.extract_date(self.starting_url)
+        object = LinkFinder(self.starting_url, info, title, html, time)
         print("start crawling!")
         self.crawl(self.starting_url)
         insertDB()
@@ -103,5 +114,5 @@ Keywords: {info.get('keywords')}
 if __name__ == "__main__":
 
     init()
-    crawler = PyCrawler("https://www.google.com/")
+    crawler = PyCrawler("https://duckduckgo.com/")
     crawler.start()

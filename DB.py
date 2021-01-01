@@ -14,7 +14,7 @@ def insertDB():
                     continue
                 num_of_appearance = len(Setting.dictionary_global[word][file].indexes.get(word))
                 post = {"url": file, "title": Setting.dictionary_global[word][file].title,
-                        "description": Setting.dictionary_global[word][file].description,"word in page": Setting.dictionary_global[word][file].indexes,"appearance": num_of_appearance}
+                        "description": Setting.dictionary_global[word][file].description,"word in page": Setting.dictionary_global[word][file].indexes,"appearance": num_of_appearance, "date modified": Setting.dictionary_global[word][file].time}
                 collection.insert_one(post)
 
         else:
@@ -24,7 +24,7 @@ def insertDB():
                 #print(Setting.dictionary_global)
                 num_of_appearance = len(Setting.dictionary_global[word][file].indexes.get(word))
                 post = {"url": file, "title": Setting.dictionary_global[word][file].title,
-                        "description": Setting.dictionary_global[word][file].description,"word in page": Setting.dictionary_global[word][file].indexes, "appearance": num_of_appearance}
+                        "description": Setting.dictionary_global[word][file].description,"word in page": Setting.dictionary_global[word][file].indexes, "appearance": num_of_appearance, "date modified":Setting.dictionary_global[word][file].time}
                 collection.insert_one(post)
 
 
@@ -40,7 +40,9 @@ def Insert_Graph(dictionary):
         if collection.find_one(myquery):
             collection.update_one(myquery,dictionary.get(key))
         else:
-            post = {"_id": key, "children": dict(dictionary.get(key))}
+            print(type(dictionary.get(key)))
+            children = list(dictionary.get(key))
+            post = {"_id": key, "children": children}
             collection.insert_one(post)
 
 
