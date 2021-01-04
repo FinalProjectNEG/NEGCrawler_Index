@@ -41,6 +41,11 @@ class LinkFinder():
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
         # drop blank lines
         self.text = '\n'.join(chunk for chunk in chunks if chunk)
+        print(self.text)
+        if self.dictionary.get('description')==None or len(self.dictionary.get('description').split(sep=" "))<5:
+            temp = text.split(sep=" ")[:20]
+            self.dictionary['description'] = '\n'.join(chunk for chunk in temp if chunk)
+            print(self.dictionary['description'])
         Create_index = Index(self.text, self.base_url,self.title, self.dictionary.get('description'), self.time)
         Create_index.calculate_score()
 
