@@ -105,7 +105,7 @@ class Index:
                         total_index[word][filename] = regdex[filename][word]
                 else:
                     total_index[word] = {filename: regdex[filename][word]}
-        #print(total_index)
+        print(total_index)
         return total_index
 
     def tokenizeDocText(self):

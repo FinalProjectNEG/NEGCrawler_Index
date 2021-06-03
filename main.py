@@ -9,7 +9,7 @@ from urllib.request import urlopen
 
 
 from DB import insertDB, Insert_Graph
-from Link_finder import LinkFinder
+from link_finder import LinkFinder
 from Setting import init
 
 
@@ -24,7 +24,7 @@ class PyCrawler(object):
         self.visited = []
         self.queue = deque([])
         self.proxy_orbit_key = os.getenv("PROXY_ORBIT_TOKEN")
-        self.user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
+        self.user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"
         self.proxy_orbit_url = f"https://api.proxyorbit.com/v1/?token={self.proxy_orbit_key}&ssl=true&rtt=0.3&protocols=http&lastChecked=30"
 
     def get_html(self, url):
@@ -62,13 +62,14 @@ class PyCrawler(object):
         return dict(meta), title,html
 
     def extract_date(self, url):
-        conn = urllib.request.urlopen(url, timeout=30)
+        conn = urllib.request.urlopen(url, timeout=30)   
+
         time = conn.headers['last-modified']
         return time
 
     def crawl(self, url):
         self.visited.append(url)
-        if len(self.queue) > 1:
+        if len(self.queue) > 3:
             return
         links = self.get_links(url)
         graph_links[url] = links
@@ -81,7 +82,7 @@ class PyCrawler(object):
                     break
 
             if flag == 0:
-                if len(self.queue) > 1:
+                if len(self.queue) > 3:
                     return
                 if link in self.visited:
                     continue
@@ -92,7 +93,7 @@ class PyCrawler(object):
 
             info, title, html = self.extract_info(link)
             time = self.extract_date(link)
-            object = LinkFinder(url,info, title, html, time)
+            object = LinkFinder(link,info, title, html, time)
 
             print(f"""Link: {link}    
 Description: {info.get('description')}    
@@ -112,7 +113,6 @@ Keywords: {info.get('keywords')}
 
 
 if __name__ == "__main__":
-
     init()
-    crawler = PyCrawler("https://duckduckgo.com/")
+    crawler = PyCrawler("https://www.cdc.gov/coronavirus/2019-ncov/index.html")
     crawler.start()

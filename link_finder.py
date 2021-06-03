@@ -30,7 +30,7 @@ class LinkFinder():
         soup = BeautifulSoup(self.html, 'html.parser')
 
         # kill all script and style elements
-        for script in soup(["script", "style", '[document]', 'head', 'title']):
+        for script in soup(["script", "style", '[document]', 'head']):
             script.extract()  # rip it out
 
         # get text
