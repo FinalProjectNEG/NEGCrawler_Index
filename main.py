@@ -114,5 +114,5 @@ Keywords: {info.get('keywords')}
 
 if __name__ == "__main__":
     init()
-    crawler = PyCrawler("https://www.cdc.gov/coronavirus/2019-ncov/index.html")
+    crawler = PyCrawler("https://he.wikipedia.org/wiki/%D7%94%D7%90%D7%97_%D7%94%D7%92%D7%93%D7%95%D7%9C_(%D7%AA%D7%95%D7%9B%D7%A0%D7%99%D7%AA_%D7%98%D7%9C%D7%95%D7%95%D7%99%D7%96%D7%99%D7%94_%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99%D7%AA)")
     crawler.start()
