@@ -2,6 +2,13 @@ from pymongo import MongoClient
 import Setting
 
 
+def checkRepeatURL(collection, url):
+    if collection.find({"url":url}):
+        return True
+    else:
+        return False
+
+
 def insertDB():
     cluster = MongoClient("mongodb://localhost:27017")
     db = cluster["NEG"]
@@ -11,7 +18,7 @@ def insertDB():
             print("word = "+word )
             collection = db[word]
             for file in Setting.dictionary_global[word].keys():
-                if collection.find({"url":Setting.dictionary_global[word][file].url}):
+                if checkRepeatURL(collection,Setting.dictionary_global[word][file].url):
                     continue
                 num_of_appearance = len(Setting.dictionary_global[word][file].indexes.get(word))
                 post = {"url": file, "title": Setting.dictionary_global[word][file].title,
